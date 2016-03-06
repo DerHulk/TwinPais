@@ -11,6 +11,7 @@ namespace TwinPairs.Controllers
     public class ApplicationController : Controller
     {
         // GET: /<controller>/
+        [Route("")]
         public IActionResult Index()
         {
             return View();

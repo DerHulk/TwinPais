@@ -24,11 +24,7 @@ namespace TwinPairs
             app.UseIISPlatformHandler();
             app.UseDeveloperExceptionPage();
             app.UseMvcWithDefaultRoute();
-
-            app.Run(async (context) =>
-            {
-                await context.Response.WriteAsync("Hello World!");
-            });
+            app.UseStaticFiles();
         }
 
         // Entry point for the application.
