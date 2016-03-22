@@ -14,7 +14,7 @@
         "Microsoft.AspNet.Authentication.Google": "1.0.0-rc1-final",
         "Microsoft.AspNet.Identity": "3.0.0-rc1-final",
         "Microsoft.Framework.ConfigurationModel": "1.0.0-beta4",
-        "Microsoft.Framework.ConfigurationModel.Json": "1.0.0-beta4"
+        "Microsoft.Framework.ConfigurationModel.Json": "1.0.0-beta4",
     },
 
   "commands": {
@@ -22,7 +22,7 @@
   },
 
   "frameworks": {
-    "dnx451": { },
+    "dnx451": {},
     "dnxcore50": { }
   },
 

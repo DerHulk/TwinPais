@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.Framework.ConfigurationModel;
+using TwinPairs.Services;
 using TwinPairs.ViewModels;
 
 namespace TwinPairs
@@ -28,6 +29,20 @@ namespace TwinPairs
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddSingleton<Microsoft.AspNet.Identity.ILookupNormalizer, Services.LookupNormilizer>();
+            services.AddSingleton<Microsoft.AspNet.Identity.IPasswordHasher<ApplicationUser>, 
+                                  Microsoft.AspNet.Identity.PasswordHasher<ApplicationUser>>();
+
+            services.AddSingleton<Microsoft.AspNet.Identity.IUserClaimsPrincipalFactory<ApplicationUser>,
+                                 Microsoft.AspNet.Identity.UserClaimsPrincipalFactory<ApplicationUser, UserRole>>();
+
+            services.AddTransient(typeof(Microsoft.AspNet.Identity.RoleManager<UserRole>));
+            services.AddTransient(typeof(Microsoft.AspNet.Identity.IdentityErrorDescriber));
+            services.AddTransient(typeof(Microsoft.AspNet.Identity.UserManager<ApplicationUser>));
+            services.AddTransient(typeof(Microsoft.AspNet.Identity.SignInManager<ApplicationUser>));
+
+            services.AddScoped<Microsoft.AspNet.Identity.IUserStore<ApplicationUser>>((x)=> new Services.CustomUserStore<ApplicationUser>());
+            services.AddScoped<Microsoft.AspNet.Identity.IRoleStore<UserRole>>((x) => new Services.RoleStore());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
