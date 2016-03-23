@@ -22,7 +22,7 @@ namespace TwinPairs.Services
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            
         }
 
         public Task<T> FindByIdAsync(string userId, CancellationToken cancellationToken)
