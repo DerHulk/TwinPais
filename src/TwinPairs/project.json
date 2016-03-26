@@ -15,6 +15,7 @@
         "Microsoft.AspNet.Identity": "3.0.0-rc1-final",
         "Microsoft.Framework.ConfigurationModel": "1.0.0-beta4",
         "Microsoft.Framework.ConfigurationModel.Json": "1.0.0-beta4",
+        "Microsoft.AspNet.Mvc.TagHelpers": "6.0.0-rc1-final"
     },
 
   "commands": {
