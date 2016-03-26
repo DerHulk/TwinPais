@@ -8,8 +8,13 @@ using TwinPairs.ViewModels;
 
 namespace TwinPairs.Services
 {
-    public class CustomUserStore<T> : IUserStore<T> where T : ApplicationUser
+    public class CustomUserStore<T> : IUserStore<T>, Microsoft.AspNet.Identity.IUserLoginStore<T> where T : ApplicationUser
     {
+        public Task AddLoginAsync(T user, UserLoginInfo login, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<IdentityResult> CreateAsync(T user, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
@@ -30,7 +35,17 @@ namespace TwinPairs.Services
             throw new NotImplementedException();
         }
 
+        public Task<T> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<T> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IList<UserLoginInfo>> GetLoginsAsync(T user, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
@@ -46,6 +61,11 @@ namespace TwinPairs.Services
         }
 
         public Task<string> GetUserNameAsync(T user, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveLoginAsync(T user, string loginProvider, string providerKey, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

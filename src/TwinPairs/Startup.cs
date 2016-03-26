@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNet.Authentication.Cookies;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Http;
@@ -28,6 +29,7 @@ namespace TwinPairs
         // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddIdentity<ApplicationUser, UserRole>().AddDefaultTokenProviders();
             services.AddMvc();
             services.AddSingleton<Microsoft.AspNet.Identity.ILookupNormalizer, Services.LookupNormilizer>();
             services.AddSingleton<Microsoft.AspNet.Identity.IPasswordHasher<ApplicationUser>, 
@@ -43,23 +45,33 @@ namespace TwinPairs
 
             services.AddScoped<Microsoft.AspNet.Identity.IUserStore<ApplicationUser>>((x)=> new Services.CustomUserStore<ApplicationUser>());
             services.AddScoped<Microsoft.AspNet.Identity.IRoleStore<UserRole>>((x) => new Services.RoleStore());
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IHostingEnvironment env, IApplicationBuilder app)
         {
-            app.UseIISPlatformHandler();
-            app.UseDeveloperExceptionPage();
-            app.UseMvcWithDefaultRoute();
+            //TemplateConfig(app, env, loggerFactory);
+            app.UseIISPlatformHandler(options => options.AuthenticationDescriptions.Clear());
             app.UseStaticFiles();
+            app.UseIdentity();
+            app.UseCookieAuthentication(new CookieAuthenticationOptions()
+            {
+                LoginPath = "/account/login",
 
-
-            app.UseGoogleAuthentication((x) =>
+                AuthenticationScheme = "Cookies",
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true
+            });
+            app.UseGoogleAuthentication(x =>
             {
                 x.ClientId = this.Configuration["client_id"];
                 x.ClientSecret = this.Configuration["client_secret"];
                 x.SignInScheme = "Cookies";
             });
+
+            app.UseDeveloperExceptionPage();
+            app.UseMvcWithDefaultRoute();
         }
 
         // Entry point for the application.
