@@ -53,12 +53,12 @@ namespace TwinPairs
         {
             //TemplateConfig(app, env, loggerFactory);
             app.UseIISPlatformHandler(options => options.AuthenticationDescriptions.Clear());
+            app.UseDeveloperExceptionPage();
             app.UseStaticFiles();
             app.UseIdentity();
             app.UseCookieAuthentication(new CookieAuthenticationOptions()
             {
                 LoginPath = "/account/login",
-
                 AuthenticationScheme = "Cookies",
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true
@@ -67,10 +67,11 @@ namespace TwinPairs
             {
                 x.ClientId = this.Configuration["client_id"];
                 x.ClientSecret = this.Configuration["client_secret"];
-                x.SignInScheme = "Cookies";
+                //x.SignInScheme = "Cookies";
+                //x.AuthenticationScheme = "Google";
+                //x.Scope.Add("email");
             });
 
-            app.UseDeveloperExceptionPage();
             app.UseMvcWithDefaultRoute();
         }
 

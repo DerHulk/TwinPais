@@ -32,57 +32,57 @@ namespace TwinPairs.Services
 
         public Task<T> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public Task<T> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return Task.FromResult<T>(null);
         }
 
         public Task<T> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public Task<IList<UserLoginInfo>> GetLoginsAsync(T user, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public Task<string> GetNormalizedUserNameAsync(T user, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public Task<string> GetUserIdAsync(T user, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public Task<string> GetUserNameAsync(T user, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public Task RemoveLoginAsync(T user, string loginProvider, string providerKey, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public Task SetNormalizedUserNameAsync(T user, string normalizedName, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public Task SetUserNameAsync(T user, string userName, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public Task<IdentityResult> UpdateAsync(T user, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }
