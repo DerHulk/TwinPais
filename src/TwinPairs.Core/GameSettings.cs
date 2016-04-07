@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace TwinPairs.Core
 {
     public class GameSettings
     {
-        public int PairsCount { get { return this.Motives.Count(); } }
+        public int PairsCount { get { return this.Motives.Count() * 2; } }
         public IEnumerable<Motive> Motives { get; set; }
 
         public IEnumerable<Position> GetPositions()

@@ -22,14 +22,13 @@
     "web": "Microsoft.AspNet.Server.Kestrel"
   },
 
-  "frameworks": {
-    "dnx451": {
-        "dependencies": {
-            "TwinPairs.Core": "1.0.0-*"
+    "frameworks": {
+        "dnx451": {
+            "dependencies": {
+                "TwinPairs.Core": "1.0.0-*"
+            }
         }
     },
-    "dnxcore50": { }
-  },
 
   "exclude": [
     "wwwroot",
