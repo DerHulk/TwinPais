@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TwinPairs.Core
 {
@@ -16,7 +17,7 @@ namespace TwinPairs.Core
             var positions = new Queue<Position>(settings.GetPositions());
             var cardSet = new List<Card>();
 
-            for (int i = 0; i < settings.PairsCount; i++)
+            for (int i = 0; i < settings.Motives.Count(); i++)
             {
                 var motiv = availableMotives.Dequeue();
                 var pairA = new Card()

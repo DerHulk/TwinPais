@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0-*",
+  "frameworks": {
+    "net451": {
+      "wrappedProject": "../../src/TwinPairs.Core/TwinPairs.Core.csproj",
+      "bin": {
+        "assembly": "../../src/TwinPairs.Core/obj/{configuration}/TwinPairs.Core.dll",
+        "pdb": "../../src/TwinPairs.Core/obj/{configuration}/TwinPairs.Core.pdb"
+      }
+    }
+  }
+}

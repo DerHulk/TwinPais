@@ -6,7 +6,7 @@ namespace TwinPairs.Core
 {
     public class GameSettings
     {
-        public int PairsCount { get { return this.Motives.Count() * 2; } }
+        public int CardsCount { get { return this.Motives.Count() * 2; } }
         public IEnumerable<Motive> Motives { get; set; }
 
         public IEnumerable<Position> GetPositions()
