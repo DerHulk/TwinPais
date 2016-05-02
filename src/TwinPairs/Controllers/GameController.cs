@@ -4,10 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
 using TwinPairs.Core;
+using TwinPairs.ViewModels;
 
 namespace TwinPairs.Controllers
 {
-    public class GameController
+    public class GameController : Controller
     {
         [HttpGet()]
         public ActionResult Index()
@@ -18,8 +19,9 @@ namespace TwinPairs.Controllers
 
             settings.Motives = motiveRepository.LoadAll();
             var game = gameFactory.Create(settings);
+            var model = new GameModel(game);
 
-            return new HttpOkResult();
+            return this.View(model);
         }
     }
 }

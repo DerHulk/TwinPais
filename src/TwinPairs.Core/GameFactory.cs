@@ -14,7 +14,7 @@ namespace TwinPairs.Core
 
             var game = new Game();
             var availableMotives = new Queue<Motive>(settings.Motives);
-            var positions = new Queue<Position>(settings.GetPositions());
+            var positions = new Queue<Position>(settings.GetRandomPositions());
             var cardSet = new List<Card>();
 
             for (int i = 0; i < settings.Motives.Count(); i++)
@@ -36,7 +36,8 @@ namespace TwinPairs.Core
                 cardSet.Add(pairB);
             }
 
-            game.Cards = cardSet;
+            game.Cards = cardSet.OrderBy(x=> x.Position.Row)
+                                .ThenBy(x=> x.Position.Column).ToArray();
             return game;
         }
     }

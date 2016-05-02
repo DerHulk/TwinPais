@@ -12,16 +12,33 @@ namespace TwinPairs.Core
         public IEnumerable<Position> GetPositions()
         {
             var result = new List<Position>();
+            var square = (int) Math.Sqrt(this.CardsCount);
+            var row = 0;
+            var column = 0;
 
-            for (int r = 0; r < this.Motives.Count(); r++)
+
+            for (int i = 0; i < this.CardsCount; i++)
             {
-                for (int c = 0; c < this.Motives.Count(); c++)
+                if (column > square)
                 {
-                    result.Add(new Position() { Row = r, Column = c });
+                    row++;
+                    column = 0;
                 }
+
+                result.Add(new Position() { Row = row, Column = column });
+
+                column++;
             }
 
             return result;
+        }
+
+        public IEnumerable<Position> GetRandomPositions()
+        {
+            var randomized = this.GetPositions().ToList();
+            randomized.Shuffle();
+
+            return randomized;
         }
 
     }

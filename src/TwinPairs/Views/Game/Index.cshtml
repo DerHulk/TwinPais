@@ -1,0 +1,29 @@
+﻿@model TwinPairs.ViewModels.GameModel
+@{
+    ViewData["Title"] = "Game";
+}
+
+@for (int r = 0; r < this.Model.Rows + 1; r++)
+{
+    <div class="row">
+        @for (int c = 0; c < this.Model.Columns +1; c++)
+        {
+            <div class="col-xs-@this.Model.RowSize">
+                <div style="height:100px">
+                    @{ var card = this.Model.GetCard(r, c);
+
+                        if (card == null)
+                        {
+                            <span>empty</span>
+                        }
+                        else
+                        {
+                            @card.Motive.Name
+                        }
+                    }
+
+                </div>
+            </div>
+                        }
+    </div>
+                        }

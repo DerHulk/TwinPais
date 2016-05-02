@@ -46,6 +46,7 @@
     <Compile Include="GameFactory.cs" />
     <Compile Include="GameSettings.cs" />
     <Compile Include="HashCombiner.cs" />
+    <Compile Include="IListExtensions.cs" />
     <Compile Include="MotiveRepository.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Position.cs" />
