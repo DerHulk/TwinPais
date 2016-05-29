@@ -25,7 +25,7 @@ namespace TwinPairs.ViewModels
         public Card GetCard(int row, int column)
         {
             return this.Game.Cards.Where(x => x.Position.Row == row &&
-                                             x.Position.Column == column)
+                                              x.Position.Column == column)
                                              .SingleOrDefault();
         }
     }

@@ -217,3 +217,11 @@ ModelManifest.xml
 /src/TwinPairs/wwwroot/lib/bootstrap
 /src/TwinPairs/wwwroot/lib/jquery/js
 /src/TwinPairs/bower_components
+/src/TwinPairs/wwwroot/app/vendor.js.map
+/src/TwinPairs/wwwroot/app/vendor.js
+/src/TwinPairs/wwwroot/app/polyfills.js.map
+/src/TwinPairs/wwwroot/app/polyfills.js
+/src/TwinPairs/wwwroot/app/app.js.map
+/src/TwinPairs/wwwroot/app/app.js
+/src/TwinPairs/wwwroot/app/*
+/src/TwinPairs/wwwroot/lib/*

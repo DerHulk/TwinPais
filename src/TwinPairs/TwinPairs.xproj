@@ -19,6 +19,7 @@
   </ItemGroup>
   <ItemGroup>
     <DnxInvisibleFolder Include="bower_components\" />
+    <DnxInvisibleFolder Include="wwwroot\node_modules\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TwinPairs.Core\TwinPairs.Core.csproj" />

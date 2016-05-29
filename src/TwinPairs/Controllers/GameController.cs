@@ -23,5 +23,10 @@ namespace TwinPairs.Controllers
 
             return this.View(model);
         }
+
+        public ActionResult Angular()
+        {
+            return View();
+        }
     }
 }
