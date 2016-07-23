@@ -225,3 +225,5 @@ ModelManifest.xml
 /src/TwinPairs/wwwroot/app/app.js
 /src/TwinPairs/wwwroot/app/*
 /src/TwinPairs/wwwroot/lib/*
+/src/TwinPairs/App/*.js
+/src/TwinPairs/App/*.map

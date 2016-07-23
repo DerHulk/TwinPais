@@ -5,10 +5,7 @@
 
     "scripts": {
         "start": "tsc -w | webpack --watch",
-        "postinstall": "typings install",
-        "tsc": "tsc",
-        "tsc:w": "tsc -w",
-        "typings": "typings"
+        "postinstall": "typings install"
     },
 
     "dependencies": {
