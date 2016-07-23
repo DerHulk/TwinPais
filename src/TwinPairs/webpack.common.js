@@ -17,8 +17,8 @@ module.exports = {
     module: {
         loaders: [
           {
-              test: /\.ts$/,
-              loader: 'ts'
+              test: /\.tsx?$/,
+              loader: 'ts-loader'
           },
           {
               test: /\.html$/,

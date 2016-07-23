@@ -4,12 +4,11 @@
     "private": true,
 
     "scripts": {
-        "start": "tsc && concurrently \"npm run tsc:w\" ",
+        "start": "tsc -w | webpack --watch",
         "postinstall": "typings install",
         "tsc": "tsc",
         "tsc:w": "tsc -w",
-        "typings": "typings",
-        "webpack": "webpack"
+        "typings": "typings"
     },
 
     "dependencies": {
@@ -40,7 +39,7 @@
         "concurrently": "^2.0.0",
         "typescript": "^1.8.10",
         "typings": "^0.8.1",
-        "webpack": "^1.12.14",
+        "webpack": "^1.13.1",
         "ts-loader": "^0.8.2",
         "file-loader": "^0.8.5",
         "html-loader": "^0.4.3",
