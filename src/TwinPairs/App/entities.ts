@@ -12,10 +12,12 @@
 
     export class Card {
 
-        public Postition: GamePosition;
+        public Position: GamePosition;
         public Motiv: CardMotiv;
         public test: string;
         public test2: string;
+        public State: string = "masked";
+
     }
 
 }
