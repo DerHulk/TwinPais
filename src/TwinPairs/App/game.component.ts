@@ -8,19 +8,22 @@ import { twinPairs } from './entities';
     template: `
         <h1>{{title}}</h1>
         <ul>
-            <li *ngFor="let c of Cards" (click)="expose(c)" @cardState="c.State"  >
-                {{c.Position.Row}}
+            <li *ngFor="let c of Cards" (click)="expose(c)">
+                <div class="card-container">
+                  <div class="card" @cardState="c.State">
+                    <figure class="front">{{c.Position.Row}}</figure>
+                    <figure class="back">test</figure>
+                  </div>
+                </div>
             </li>
         </ul>`,
     animations: [
         trigger('cardState', [
             state('masked', style({
-                backgroundColor: '#eee',
-                transform: 'scale(1)'
+               
             })),
             state('exposed', style({
-                backgroundColor: '#cfd8dc',
-                transform: 'scale(1.1)'
+                transform: 'rotateY(180deg)',
             })),
             transition('masked => exposed', animate('100ms ease-in')),
             transition('exposed => masked', animate('100ms ease-out'))
