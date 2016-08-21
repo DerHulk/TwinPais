@@ -12,7 +12,7 @@ import { twinPairs } from './entities';
                 <div class="card-container">
                   <div class="card" @cardState="c.State">
                     <figure class="front">{{c.Position.Row}}</figure>
-                    <figure class="back">test</figure>
+                    <figure class="back">{{c.Motiv.Name}}</figure>
                   </div>
                 </div>
             </li>
@@ -41,6 +41,7 @@ export class GameComponent {
 
     public expose(card: twinPairs.Card) {
         card.State = "exposed";
+        this.gameService.expose(card);
     }
 
 }

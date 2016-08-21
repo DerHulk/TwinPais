@@ -28,5 +28,9 @@ namespace TwinPairs.Controllers
         {
             return View();
         }
+
+        public JsonResult Expose(int row, int column) {
+            return this.Json(13);
+        }
     }
 }
