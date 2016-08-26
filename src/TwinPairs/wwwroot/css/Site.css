@@ -36,3 +36,13 @@
   background: blue;
   transform: rotateY( 180deg );
 }
+
+.board ul{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.board li {
+    display: inline-block;
+}

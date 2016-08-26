@@ -10,8 +10,17 @@ export var Cards: twinPairs.Card[] = [
     { Position: { Column: 2, Row: 1 }, Motiv: { Id: "2", Name: "" }, test: "", test2: "", State: "masked" },
     { Position: { Column: 3, Row: 1 }, Motiv: { Id: "3", Name: "" }, test: "", test2: "", State: "masked" },
     { Position: { Column: 1, Row: 2 }, Motiv: { Id: "3", Name: "" }, test: "", test2: "", State: "masked" },
-    { Position: { Column: 1, Row: 2 }, Motiv: { Id: "2", Name: "" }, test: "", test2: "", State: "masked" },
-    { Position: { Column: 1, Row: 2 }, Motiv: { Id: "12", Name: "" }, test: "12", test2: "", State: "masked" },
+    { Position: { Column: 2, Row: 2 }, Motiv: { Id: "2", Name: "" }, test: "", test2: "", State: "masked" },
+    { Position: { Column: 3, Row: 2 }, Motiv: { Id: "12", Name: "" }, test: "12", test2: "", State: "masked" },
+
+    { Position: { Column: 1, Row: 3 }, Motiv: { Id: "3", Name: "" }, test: "", test2: "", State: "masked" },
+    { Position: { Column: 2, Row: 3 }, Motiv: { Id: "2", Name: "" }, test: "", test2: "", State: "masked" },
+    { Position: { Column: 3, Row: 3 }, Motiv: { Id: "12", Name: "" }, test: "12", test2: "", State: "masked" },
+
+    { Position: { Column: 1, Row: 4 }, Motiv: { Id: "3", Name: "" }, test: "", test2: "", State: "masked" },
+    { Position: { Column: 2, Row: 4 }, Motiv: { Id: "2", Name: "" }, test: "", test2: "", State: "masked" },
+    { Position: { Column: 3, Row: 4 }, Motiv: { Id: "12", Name: "" }, test: "12", test2: "", State: "masked" },
+
 ];
 
 @Injectable()
@@ -24,10 +33,12 @@ export class GameService {
         return Cards; //ignore
     }
 
-    public expose(card: twinPairs.Card): void
+    public expose(card: twinPairs.Card): number
     {
-        this.http.get("./game/expose?row=" + card.Position.Row + "&column=" + card.Position.Column)
-            .toPromise().then((value)=> value.json()[1]);
+       var value = this.http.get("./game/expose?row=" + card.Position.Row + "&column=" + card.Position.Column)
+                       .toPromise().then((value) => value.json()[1]);
+
+       return Number(value);
     }
 
 }

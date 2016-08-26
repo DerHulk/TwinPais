@@ -1,7 +1,7 @@
 ﻿import { bootstrap }    from '../node_modules/@angular/platform-browser-dynamic';
-import { AppComponent } from './app.component';
+import { GameComponent } from './game.component';
 import { HTTP_PROVIDERS, JsonpModule  } from '@angular/http';
 
-bootstrap(AppComponent, [
+bootstrap(GameComponent, [
     HTTP_PROVIDERS, JsonpModule
 ]);

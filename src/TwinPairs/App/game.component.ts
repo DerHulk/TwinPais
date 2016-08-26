@@ -5,22 +5,11 @@ import { twinPairs } from './entities';
 @Component({
     providers: [GameService],
     selector: 'game',
-    template: `
-        <h1>{{title}}</h1>
-        <ul>
-            <li *ngFor="let c of Cards" (click)="expose(c)">
-                <div class="card-container">
-                  <div class="card" @cardState="c.State">
-                    <figure class="front">{{c.Position.Row}}</figure>
-                    <figure class="back">{{c.Motiv.Name}}</figure>
-                  </div>
-                </div>
-            </li>
-        </ul>`,
+    templateUrl: '/template/board',
     animations: [
         trigger('cardState', [
             state('masked', style({
-               
+
             })),
             state('exposed', style({
                 transform: 'rotateY(180deg)',
@@ -31,17 +20,37 @@ import { twinPairs } from './entities';
     ]
 })
 export class GameComponent {
-    title = 'Hulk';
-    Cards: Array<twinPairs.Card>;
+
+    Cards: Array<Array<twinPairs.Card>>;
 
     constructor(private gameService: GameService) {
 
-        this.Cards = gameService.loadCards();
+        var loadedCards = gameService.loadCards();
+        var rows = Math.max.apply(Math, loadedCards.map(x => x.Position.Row));
+        var columns = Math.max.apply(Math, loadedCards.map(x => x.Position.Column));
+
+        this.Cards = new Array<Array<twinPairs.Card>>();
+
+        for (var r = 1; r <= rows; r++) {
+            var rowArray = new Array<twinPairs.Card>();
+            this.Cards.push(rowArray);
+
+            for (var c = 1; c <= columns; c++) {
+                rowArray.push(this.getCard(loadedCards, r, c));
+            }
+        }
+
     }
 
     public expose(card: twinPairs.Card) {
         card.State = "exposed";
-        this.gameService.expose(card);
+        var value = this.gameService.expose(card);
+        card.Motiv.Name = value.toString();
     }
 
+    public getCard(unsortedCard:Array<twinPairs.Card>, row: number, column: number): twinPairs.Card {
+
+        return unsortedCard.find(x => x.Position.Column == column && x.Position.Row == row);
+
+    }
 }
