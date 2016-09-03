@@ -5,6 +5,8 @@ namespace TwinPairs.Core
     {
         public Position Position { get; set; }
         public Motive Motive { get; set; }
+        public bool IsExposed { get; set; }
+        public Player OwnedBy { get; set; }
 
         public override bool Equals(object obj)
         {
