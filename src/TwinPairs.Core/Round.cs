@@ -27,49 +27,36 @@ namespace TwinPairs.Core
             this.MaxExposing = maxExposing;
         }
 
-        public void Expose(Card card)
+        public ExposeResult Expose(Card card)
         {
+            if (!Game.Cards.Contains(card))
+                throw new ArgumentOutOfRangeException(nameof(card));
+
             _ExposedCards.Add(card);
 
-            if (!this.HasEnd() && this.ExposedCards.Count() >= MaxExposing)
-                this.Ends = DateTime.Now;
+            var exposeIsMissing = this.ExposedCards.Count() % this.MaxExposing != 0;
+
+            if (exposeIsMissing)
+                return ExposeResult.MissinExposing;
+
+            var nextPlayer = this.GetNextPlayer();
+            return new ExposeResult(false, false, new Round(this.Game,nextPlayer, this.MaxExposing));
         }
 
-        public bool HasEnd()
-        {
-            return this.Ends.HasValue;
-        }
-
-        public bool IsPair() {
-
-            if (!this.ExposedCards.Any())
-                return false;
-
-            return this.ExposedCards.All(x => 
-                this.ExposedCards.First().Motive.Equals(x.Motive));
-        }
-
-        public Round NextRound()
-        {
-            var nextPlayer = this.IsPair() ? this.Player : this.GetNexPlayer();
-            var newRound = new Round( this.Game, nextPlayer , MaxExposing);
-
-
-
-            return newRound;
-        }
-
-        private Player GetNexPlayer()
+        private Player GetNextPlayer()
         {
             var playerList = this.Game.Players.ToList();
-            var playerIndex = playerList.IndexOf(this.Player);
+            var index = playerList.IndexOf(this.Player);
 
-            playerIndex++;
+            if (index == -1)
+                throw new InvalidOperationException("Playerlist is corrupt");
 
-            if (playerIndex > playerList.Count)
-                playerIndex = 0;
-
-           return playerList[playerIndex];
+            if (index + 1 >= this.Game.Players.Count())
+                return this.Game.Players.First();
+            else
+                return playerList[index + 1];
         }
+
+        
     }
 }

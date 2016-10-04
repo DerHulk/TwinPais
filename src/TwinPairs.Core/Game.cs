@@ -18,21 +18,8 @@ namespace TwinPairs.Core
             return new Round(this, this.Players.First(), MaxExposedCards);
         }
 
-        public Round GetCurrentRound()
-        {
-            if (!Rounds.Any())
-                Rounds.Push(this.StartFirstRound());
-
-            if (!Rounds.Peek().HasEnd())
-                return Rounds.Peek();
-
-            var newRound = Rounds.Peek().NextRound();
-            Rounds.Push(newRound);
-
-            return newRound;
-        }
         public IEnumerable<Round> GetPlayedRounds() {
-            return this.Rounds.Where(x => x.HasEnd()).ToArray();
+            return this.Rounds.Where(x => x.Ends.HasValue).OrderBy(x=> x.Starts).ToArray();
         }
 
         public bool IsFinished()

@@ -11,14 +11,16 @@ namespace TwinPairs.Core.Tests
     {
         private readonly Round Target;
         private readonly Moq.Mock<Game> Game;
-        private readonly Moq.Mock<Player> Player;
         private readonly int MaxExposing = 2;
 
         public RoundTests()
         {
             this.Game = new Moq.Mock<Core.Game>();
-            this.Player = new Moq.Mock<Core.Player>();
-            this.Target = new Round(this.Game.Object, this.Player.Object, this.MaxExposing);
+            this.Game.Setup(x => x.Players).Returns(new Player[] { new Player() {Name = "Hans" },
+                                                                   new Player() { Name = "Scott" } });
+
+            
+            this.Target = new Round(this.Game.Object, this.Game.Object.Players.First(), this.MaxExposing);
         }
 
         [Fact]
@@ -39,32 +41,32 @@ namespace TwinPairs.Core.Tests
 
         }
 
-        [Fact(DisplayName ="Proof that a empty round doesnt have a pair.")]
-        public void IsPair01()
+        [Fact(DisplayName ="Checks if we get an Missing Exposing if we make only one exposing.")]
+        public void Expose01()
         {
             //arrange
-
+            var cardToExpose = new Card();
+            this.Game.Setup(x => x.Cards).Returns(new Card[] { cardToExpose });
+            
             //act
-            var result = this.Target.IsPair();
+            var result = this.Target.Expose(cardToExpose);
 
             //assert
-            Assert.False(result);
+            Assert.Equal(ExposeResult.MissinExposing, result);
         }
 
-        [Fact(DisplayName ="Proofs if a new round is not direclty ended.")]
-        public void HasEnd01()
+        [Fact(DisplayName = "Checks if we get an argumentout of range if the card is not in the game.")]
+        public void Expose02()
         {
             //arrange
+            var cardToExpose = new Card();
 
-            //act
-            var result = this.Target.HasEnd();
-
-            //assert
-            Assert.False(result);
+            //act & assert
+            Assert.Throws<ArgumentOutOfRangeException>(()=> this.Target.Expose(cardToExpose));
         }
 
-        [Fact(DisplayName = "Proofs if a round reached the max exposed cards without pair the round ist ending.")]
-        public void HasEnd02()
+        [Fact(DisplayName = "Proofs if a round reached the max exposed cards without pair the round ist ending. And the next player is on the round.")]
+        public void Expose03()
         {
             //arrange
             var cards = new Card[] {
@@ -75,17 +77,19 @@ namespace TwinPairs.Core.Tests
 
             this.Game.Setup(x => x.Cards).Returns(cards);
 
-            //act
-            for (int i = 0; i < MaxExposing ; i++)
+            //act 
+            ExposeResult result = null;
+
+            for (int i = 0; i < MaxExposing; i++)
             {
-                this.Target.Expose(cards.Skip(i).Take(1).First());
+                result = this.Target.Expose(cards.Skip(i).Take(1).First());
             }
 
-            var result = this.Target.HasEnd();
-
             //assert
-            Assert.True(result);
+            Assert.NotNull(result);
+            Assert.True(result.RoundHasEnd);
+            Assert.NotNull(result.NextRound);
+            Assert.NotEqual(Game.Object.Players.First(), result.NextRound.Player);
         }
-
     }
 }
