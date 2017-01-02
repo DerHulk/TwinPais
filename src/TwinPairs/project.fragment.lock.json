@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "exports": {
+    "TwinPairs.Core/1.0.0": {
+      "type": "project",
+      "framework": ".NETFramework,Version=v4.5.1",
+      "compile": {
+        "bin/Debug/TwinPairs.Core.dll": {}
+      },
+      "runtime": {
+        "bin/Debug/TwinPairs.Core.dll": {}
+      },
+      "contentFiles": {
+        "bin/Debug/TwinPairs.Core.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        }
+      }
+    }
+  }
+}

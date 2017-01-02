@@ -15,8 +15,8 @@ namespace TwinPairs.Core.Tests
         {
             //arrange
             var factory = new GameFactory();
-            var settings = new GameSettings() { Motives = new Motive[] { new Motive() { Id = 1 },
-                                                                         new Motive() { Id = 2} }};
+            var settings = new GameSettings() { Motives = new Motive[] { new Motive(1, "cat") ,
+                                                                         new Motive(1, "dog") }};
             //act
             var result = factory.Create(settings);
 

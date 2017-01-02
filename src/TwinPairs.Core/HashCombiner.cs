@@ -18,11 +18,14 @@ namespace TwinPairs.Core
             if (obj.Count() == 1)
                 throw new InvalidOperationException("obj.Count() == 1");
 
-            int resultHash = obj[1].GetHashCode();
+            int resultHash = obj[0].GetHashCode();
 
-            for (int i = 1; i < obj.Length; i++)
+            for (int i = 0; i < obj.Length; i++)
             {
-                resultHash = CombineHashCodes(resultHash, obj[i]?.GetHashCode());
+                var hash = obj[i]?.GetHashCode();
+
+                if(hash.HasValue)
+                    resultHash = CombineHashCodes(resultHash, hash.Value);
             }
 
             return resultHash;

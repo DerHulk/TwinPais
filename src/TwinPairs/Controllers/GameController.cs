@@ -11,7 +11,7 @@ namespace TwinPairs.Controllers
 
     public class GameController : Controller
     {
-        private static GameModel CurrentGame;
+        private static Game CurrentGame;
 
         [HttpGet()]
         public ActionResult Index()
@@ -25,15 +25,25 @@ namespace TwinPairs.Controllers
 
                 settings.Motives = motiveRepository.LoadAll();
                 var game = gameFactory.Create(settings);
-                CurrentGame = new GameModel(game);
+                game.Players = new Player[] { new Player() { Id = Guid.Parse("0f80a756-ba96-4f8a-8333-cbc8f9ef372d"),
+                                                             Name = "Tom" },
+                                              new Player() { Id = Guid.Parse("7fd6885f-d2fe-46ce-b7c1-fb48026a6a60"),
+                                                             Name = "Lilu" } };
+
+                CurrentGame = game; ;
             }
 
-            var model = CurrentGame;
+            var model =  new GameModel(CurrentGame);
             return this.View(model);
         }
 
         public JsonResult Expose(int row, int column) {
-            return this.Json(13);
+
+            var currentPlayer = CurrentGame.GetCurrentPlayer();
+            var selected = CurrentGame.SelectCard(new Position(row, column));
+            var result =  currentPlayer.Expose(selected, CurrentGame);
+
+            return this.Json(selected.Motive);
         }
     }
 }

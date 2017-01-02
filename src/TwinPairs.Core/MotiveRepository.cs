@@ -11,11 +11,11 @@ namespace TwinPairs.Core
         {
             return new Motive[] 
             {
-                new Motive() { Id = 1, Name = "Bird" },
-                new Motive() { Id = 2, Name = "Dog" },
-                new Motive() { Id = 3, Name = "Sheep" },
-                new Motive() { Id = 4, Name = "Cat" },
-                new Motive() { Id = 5, Name = "Turtel" },
+                new Motive(1,"Bird"),
+                new Motive(2, "Dog"),
+                new Motive(3, "Sheep"),
+                new Motive(4, "Cat"),
+                new Motive(5, "Turtel"),
             };
         }
     }

@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Diagnostics.Contracts;
 
 namespace TwinPairs.Core
 {
@@ -29,5 +30,15 @@ namespace TwinPairs.Core
             return HashCombiner.CombineHashCodes(this.Id, this.Name);
         }
 
+        public ExposeResult Expose(Card card, Game game)
+        {
+            Contract.Requires(card != null);
+            Contract.Requires(game != null);
+
+            var history = new History(this, card.Position, DateTime.Now);
+            game.AddHistory(history);
+
+            return null;
+        }
     }
 }

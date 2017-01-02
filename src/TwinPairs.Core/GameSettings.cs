@@ -25,7 +25,7 @@ namespace TwinPairs.Core
                     column = 0;
                 }
 
-                result.Add(new Position() { Row = row, Column = column });
+                result.Add(new Position(row, column ));
 
                 column++;
             }
