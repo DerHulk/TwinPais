@@ -49,6 +49,7 @@
     <Compile Include="HashCombiner.cs" />
     <Compile Include="History.cs" />
     <Compile Include="IListExtensions.cs" />
+    <Compile Include="Lobby.cs" />
     <Compile Include="MotiveRepository.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Position.cs" />

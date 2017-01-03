@@ -1,5 +1,5 @@
 ﻿import { Injectable } from '@angular/core';
-import {URLSearchParams, Http, Jsonp} from '@angular/http';
+import { URLSearchParams, Http, HttpModule, JsonpModule} from '@angular/http';
 import { twinPairs } from './entities';
 import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/map';

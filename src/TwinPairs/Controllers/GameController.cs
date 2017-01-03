@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Mvc;
 using TwinPairs.Core;
 using TwinPairs.ViewModels;
@@ -14,6 +15,7 @@ namespace TwinPairs.Controllers
         private static Game CurrentGame;
 
         [HttpGet()]
+        [Authorize]
         public ActionResult Index()
         {
             //hack
@@ -32,9 +34,7 @@ namespace TwinPairs.Controllers
 
                 CurrentGame = game; ;
             }
-
-            var model =  new GameModel(CurrentGame);
-            return this.View(model);
+            return this.View();
         }
 
         public JsonResult Expose(int row, int column) {
@@ -42,6 +42,7 @@ namespace TwinPairs.Controllers
             var currentPlayer = CurrentGame.GetCurrentPlayer();
             var selected = CurrentGame.SelectCard(new Position(row, column));
             var result =  currentPlayer.Expose(selected, CurrentGame);
+
 
             return this.Json(selected.Motive);
         }

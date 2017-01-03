@@ -61,7 +61,8 @@ namespace TwinPairs
                 LoginPath = "/account/login",
                 AuthenticationScheme = "Cookies",
                 AutomaticAuthenticate = true,
-                AutomaticChallenge = true
+                AutomaticChallenge = true,
+                ExpireTimeSpan = new TimeSpan(1, 0, 0, 0, 0)
             });
             app.UseGoogleAuthentication(x =>
             {

@@ -4,6 +4,38 @@ import { twinPairs } from './entities';
 
 @Component({
     providers: [GameService],
+    selector: 'twinpairs',
+    template: `
+                <h1>Twinpairs!</h1>
+                <router-outlet></router-outlet>
+              `
+})
+    //test12
+export class TwinPairComponent {
+
+    constructor(private gameService: GameService) {
+        
+    }
+}
+
+@Component({
+    providers: [GameService],
+    selector: 'lobby',
+    template: `<div>
+                  <h1>Lobby</h1>
+                  <a href="/game/1" >Game</a>
+                  <a routerLink="/games" routerLinkActive="active">Crisis Center</a>
+               </div>`,
+})
+export class LobbyComponent {
+
+    constructor(private gameService: GameService) {
+
+    }
+}
+
+@Component({
+    providers: [GameService],
     selector: 'game',
     templateUrl: '/template/board',
     animations: [

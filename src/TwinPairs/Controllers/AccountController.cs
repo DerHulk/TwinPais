@@ -46,6 +46,8 @@ namespace TwinPairs.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogOff()
         {
+            await HttpContext.Authentication.SignOutAsync("Cookies");
+
             await _signInManager.SignOutAsync();
             return RedirectToAction(nameof(ApplicationController.Index), "Home");
         }
@@ -75,6 +77,9 @@ namespace TwinPairs.Controllers
                 return RedirectToAction(nameof(Login));
             }
 
+            //add cookie
+            await HttpContext.Authentication.SignInAsync("Cookies", info.ExternalPrincipal);
+
             // Sign in the user with this external login provider if the user already has a login.
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
             if (result.Succeeded)
@@ -91,6 +96,7 @@ namespace TwinPairs.Controllers
                 ViewData["ReturnUrl"] = returnUrl;
                 ViewData["LoginProvider"] = info.LoginProvider;
                 var email = info.ExternalPrincipal.FindFirstValue(ClaimTypes.Email);
+
                 return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = email });
             }
         }
