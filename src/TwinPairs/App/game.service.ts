@@ -1,9 +1,9 @@
 ﻿import { Injectable } from '@angular/core';
-import { URLSearchParams, Http, HttpModule, JsonpModule} from '@angular/http';
+import { URLSearchParams, Http, HttpModule, JsonpModule } from '@angular/http';
 import { twinPairs } from './entities';
-import {Observable} from 'rxjs/Rx';
+import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
-import 'rxjs/Rx'; 
+import 'rxjs/Rx';
 
 export var Cards: twinPairs.Card[] = [
     { Position: { Column: 1, Row: 1 }, Motiv: { Id: "1", Name: "" }, test: "", test2: "", State: "masked" },
@@ -33,12 +33,24 @@ export class GameService {
         return Cards; //ignore
     }
 
-    public expose(card: twinPairs.Card): number
-    {
-       var value = this.http.get("./game/expose?row=" + card.Position.Row + "&column=" + card.Position.Column)
-                       .toPromise().then((value) => value.json()[1]);
+    public expose(card: twinPairs.Card): number {
+        var value = this.http.get("./game/expose?row=" + card.Position.Row + "&column=" + card.Position.Column)
+            .toPromise().then((value) => value.json()[1]);
 
-       return Number(value);
+        return Number(value);
     }
 
+    public loadGames(onLoad: (load: twinPairs.Game[]) => void) {
+        var games = this.http.get("./lobby/index/")
+            .map(x => <Array<twinPairs.Game>>x.json())
+            .subscribe(onLoad);
+    }
+
+    public createGame() {
+        this.http.post("./lobby/create", null).subscribe();
+    }
+
+    public join(id: string): void {
+        var test = this.http.get("./lobby/index/" + id).subscribe();
+    }
 }

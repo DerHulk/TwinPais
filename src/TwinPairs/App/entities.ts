@@ -20,5 +20,9 @@
 
     }
 
+    export class Game {
+        public Id: string;
+        public Player: Array<string>;
+    }
 }
 

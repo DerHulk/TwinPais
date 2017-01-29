@@ -16,5 +16,12 @@ namespace TwinPairs.Controllers
         {
             return PartialView("Board");
         }
+
+        [HttpGet()]
+        [Route("Template/Lobby")]
+        public PartialViewResult GetLobby()
+        {
+            return PartialView("Lobby");
+        }
     }
 }

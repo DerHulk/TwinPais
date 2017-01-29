@@ -10,27 +10,29 @@ import { twinPairs } from './entities';
                 <router-outlet></router-outlet>
               `
 })
-    //test12
 export class TwinPairComponent {
 
     constructor(private gameService: GameService) {
         
     }
 }
-
+//test
 @Component({
     providers: [GameService],
     selector: 'lobby',
-    template: `<div>
-                  <h1>Lobby</h1>
-                  <a href="/game/1" >Game</a>
-                  <a routerLink="/games" routerLinkActive="active">Crisis Center</a>
-               </div>`,
+    templateUrl: '/template/lobby',
 })
 export class LobbyComponent {
 
-    constructor(private gameService: GameService) {
+    public Games: twinPairs.Game[];
 
+    constructor(private gameService: GameService) {
+        this.gameService.loadGames(x => this.Games = x); //123
+    }
+
+    public clicked(): void {
+        //this.gameService.join("1");
+        this.gameService.createGame();
     }
 }
 
