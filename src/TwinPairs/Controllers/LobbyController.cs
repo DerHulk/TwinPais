@@ -17,8 +17,8 @@ namespace TwinPairs.Controllers
         public JsonResult Index()
         {
             return Json(Games.Select(x => new
-                { id = x.Id,
-                  player = x.Players.Select(p => p.Name) }
+                { Id = x.Id,
+                  Player = x.Players.Select(p => p.Name) }
                 ).ToArray());
         }
 
@@ -31,6 +31,7 @@ namespace TwinPairs.Controllers
 
             settings.Motives = motiveRepository.LoadAll();
             var game = gameFactory.Create(settings);
+            game.Id = Guid.NewGuid();
             game.Players = new Player[] { new Player() { Id = Guid.Parse("0f80a756-ba96-4f8a-8333-cbc8f9ef372d"),
                                                              Name = this.HttpContext.User.Identity.Name }};
 
@@ -42,7 +43,6 @@ namespace TwinPairs.Controllers
         [HttpPost]
         public ActionResult Join(string id)
         {
-
             Guid guidId = Guid.Empty;
             if (!Guid.TryParse(id, out guidId))
                 return new HttpStatusCodeResult((int)System.Net.HttpStatusCode.NotFound);
@@ -54,7 +54,7 @@ namespace TwinPairs.Controllers
 
             var joiningPlayer = new Player()
             {
-                Id = Guid.Parse("0f80a756-ba96-4f8a-8333-cbc8f9ef372d"),
+                Id = Guid.NewGuid(),
                 Name = this.HttpContext.User.Identity.Name
             };
 

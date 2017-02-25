@@ -1,5 +1,5 @@
 ﻿import { Injectable } from '@angular/core';
-import { URLSearchParams, Http, HttpModule, JsonpModule } from '@angular/http';
+import { URLSearchParams, Http, HttpModule, JsonpModule, RequestOptions, Headers } from '@angular/http';
 import { twinPairs } from './entities';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
@@ -51,6 +51,6 @@ export class GameService {
     }
 
     public join(id: string): void {
-        var test = this.http.get("./lobby/index/" + id).subscribe();
+        var test = this.http.post("./lobby/join?id=" + id, null).subscribe();
     }
 }

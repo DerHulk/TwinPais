@@ -27,12 +27,17 @@ export class LobbyComponent {
     public Games: twinPairs.Game[];
 
     constructor(private gameService: GameService) {
-        this.gameService.loadGames(x => this.Games = x); //123
+        this.gameService.loadGames(x => this.Games = x);
     }
 
-    public clicked(): void {
-        //this.gameService.join("1");
+    public create(): void {
         this.gameService.createGame();
+        this.gameService.loadGames(x => this.Games = x);
+    }
+
+    public join(game: twinPairs.Game): void {
+        this.gameService.join(game.Id);
+        this.gameService.loadGames(x => this.Games = x);
     }
 }
 

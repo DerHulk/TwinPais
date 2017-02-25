@@ -2,8 +2,19 @@
     <h1>Lobby</h1>
     <a href="/game/1">Game</a>
     <a routerLink="/games" routerLinkActive="active">Crisis Center</a>
-    <button (click)="clicked()">Create new Game</button>
+    <button (click)="create()">Create new Game</button>
     <ul>
-        <li *ngFor="let game of Games"> fooo {{Games?.length}}</li>
+        <li *ngFor="let game of Games">
+            <div>
+                {{game?.id}}
+                <button (click)="join(game)">Join</button>
+                Players:
+                <ul>
+                    <li *ngFor="let player of Players">
+                        <span>{{player}}</span>
+                    </li>
+                </ul>
+            </div>
+        </li>
     </ul>
 </div>
