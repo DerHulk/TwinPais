@@ -24,5 +24,10 @@
         public Id: string;
         public Player: Array<string>;
     }
+
+    export class CreateGameCommandModel {
+        public Cards:number;
+        public IsPublic: boolean;
+}
 }
 

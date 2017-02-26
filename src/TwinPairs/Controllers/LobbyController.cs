@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Mvc;
 using TwinPairs.Core;
+using TwinPairs.ViewModels;
 
 namespace TwinPairs.Controllers
 {
@@ -16,15 +17,18 @@ namespace TwinPairs.Controllers
         [HttpGet]
         public JsonResult Index()
         {
-            return Json(Games.Select(x => new
+            return Json(Games.Where(x=> x.Players.Count() <= 2).Select(x => new
                 { Id = x.Id,
                   Player = x.Players.Select(p => p.Name) }
                 ).ToArray());
         }
 
         [HttpPost]
-        public HttpStatusCodeResult Create()
+        public HttpStatusCodeResult Create([FromBody]CreateGameCommandModel model)
         {
+            if (model == null)
+                return new HttpStatusCodeResult((int)System.Net.HttpStatusCode.PreconditionFailed);
+
             var settings = new GameSettings();
             var motiveRepository = new MotiveRepository();
             var gameFactory = new GameFactory();
@@ -49,7 +53,7 @@ namespace TwinPairs.Controllers
 
             var selected = Games.SingleOrDefault(x => x.Id == guidId);
 
-            if (selected.Players.Count() >= 2)
+            if (selected.Players.Count() >= 2 || selected.Players.Any(x=> x.Name == this.HttpContext.User.Identity.Name))
                 return new HttpStatusCodeResult((int)System.Net.HttpStatusCode.NotAcceptable);
 
             var joiningPlayer = new Player()

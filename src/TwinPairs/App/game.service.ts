@@ -47,7 +47,11 @@ export class GameService {
     }
 
     public createGame() {
-        this.http.post("./lobby/create", null).subscribe();
+        var command = new twinPairs.CreateGameCommandModel();
+        command.Cards = 4;
+        command.IsPublic = true;
+
+        this.http.post("./lobby/create", command ).subscribe();
     }
 
     public join(id: string): void {
