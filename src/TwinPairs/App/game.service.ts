@@ -29,21 +29,19 @@ export class GameService {
     constructor(private http: Http) {
     }
 
-    public loadCards(): Array<twinPairs.Card> {
-        return Cards; //ignore
+    public loadCards(gameId: number): Observable<twinPairs.Card[]> {
+        return this.http.get("./game/read/" + gameId).map(x=> <Array<twinPairs.Card>> x.json());
     }
 
-    public expose(card: twinPairs.Card): number {
-        var value = this.http.get("./game/expose?row=" + card.Position.Row + "&column=" + card.Position.Column)
-            .toPromise().then((value) => value.json()[1]);
-
-        return Number(value);
+    public expose(gameId: number, card: twinPairs.Card): Observable<twinPairs.CardMotiv> {
+        return this.http.get("./game/expose/" + gameId + "/?row=" + card.Position.Row + "&column=" + card.Position.Column)
+            .map(x => <twinPairs.CardMotiv>x.json());
     }
 
-    public loadGames(onLoad: (load: twinPairs.Game[]) => void) {
-        var games = this.http.get("./lobby/index/")
-            .map(x => <Array<twinPairs.Game>>x.json())
-            .subscribe(onLoad);
+    public loadGames()
+        : Observable<twinPairs.Game[]> {
+        return this.http.get("./lobby/index/")
+            .map(x => <Array<twinPairs.Game>>x.json());
     }
 
     public createGame() {

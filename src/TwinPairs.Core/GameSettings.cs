@@ -19,7 +19,7 @@ namespace TwinPairs.Core
 
             for (int i = 0; i < this.CardsCount; i++)
             {
-                if (column > square)
+                if (column >= square)
                 {
                     row++;
                     column = 0;

@@ -46,6 +46,7 @@
     <Compile Include="Game.cs" />
     <Compile Include="GameFactory.cs" />
     <Compile Include="GameSettings.cs" />
+    <Compile Include="GamesStore.cs" />
     <Compile Include="HashCombiner.cs" />
     <Compile Include="History.cs" />
     <Compile Include="IListExtensions.cs" />

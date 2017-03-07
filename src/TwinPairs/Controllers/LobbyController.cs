@@ -12,14 +12,14 @@ namespace TwinPairs.Controllers
     [Authorize]
     public class LobbyController : Controller
     {
-        private static List<Game>  Games { get;  } = new List<Game>();
+        private IGameStore GameStore { get; } = new GamesStore(); //hack
 
         [HttpGet]
         public JsonResult Index()
         {
-            return Json(Games.Where(x=> x.Players.Count() <= 2).Select(x => new
+            return Json(this.GameStore.LoadAllAvailableForPlayer().Select(x => new
                 { Id = x.Id,
-                  Player = x.Players.Select(p => p.Name) }
+                  Players = x.Players.Select(p => p.Name) }
                 ).ToArray());
         }
 
@@ -33,13 +33,13 @@ namespace TwinPairs.Controllers
             var motiveRepository = new MotiveRepository();
             var gameFactory = new GameFactory();
 
-            settings.Motives = motiveRepository.LoadAll();
+            settings.Motives = motiveRepository.LoadAll().Take(model.Cards);
             var game = gameFactory.Create(settings);
             game.Id = Guid.NewGuid();
             game.Players = new Player[] { new Player() { Id = Guid.Parse("0f80a756-ba96-4f8a-8333-cbc8f9ef372d"),
                                                              Name = this.HttpContext.User.Identity.Name }};
 
-            Games.Add(game);
+            this.GameStore.Add(game);
 
             return new HttpStatusCodeResult(200);
         }
@@ -51,7 +51,10 @@ namespace TwinPairs.Controllers
             if (!Guid.TryParse(id, out guidId))
                 return new HttpStatusCodeResult((int)System.Net.HttpStatusCode.NotFound);
 
-            var selected = Games.SingleOrDefault(x => x.Id == guidId);
+            var selected = this.GameStore.LoadById(guidId);
+
+            if(selected == null)
+                return new HttpStatusCodeResult((int)System.Net.HttpStatusCode.NotFound);
 
             if (selected.Players.Count() >= 2 || selected.Players.Any(x=> x.Name == this.HttpContext.User.Identity.Name))
                 return new HttpStatusCodeResult((int)System.Net.HttpStatusCode.NotAcceptable);

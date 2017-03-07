@@ -9,39 +9,28 @@ using TwinPairs.ViewModels;
 
 namespace TwinPairs.Controllers
 {
-
     public class GameController : Controller
     {
-        private static Game CurrentGame;
+        private IGameStore GameStore { get; } = new GamesStore(); //hack
 
-        [HttpGet()]
+        [HttpGet("/game/read/{gameId}")]
         [Authorize]
-        public ActionResult Index()
+        public ActionResult Read(Guid gameId)
         {
-            //hack
-            if (CurrentGame == null)
-            {
-                var settings = new GameSettings();
-                var motiveRepository = new MotiveRepository();
-                var gameFactory = new GameFactory();
+            var game = this.GameStore.LoadById(gameId);
+            var model = game.Cards.ToArray();
 
-                settings.Motives = motiveRepository.LoadAll();
-                var game = gameFactory.Create(settings);
-                game.Players = new Player[] { new Player() { Id = Guid.Parse("0f80a756-ba96-4f8a-8333-cbc8f9ef372d"),
-                                                             Name = "Tom" },
-                                              new Player() { Id = Guid.Parse("7fd6885f-d2fe-46ce-b7c1-fb48026a6a60"),
-                                                             Name = "Lilu" } };
+            return this.Json(model);
 
-                CurrentGame = game; ;
-            }
-            return this.View();
         }
 
-        public JsonResult Expose(int row, int column) {
+        [HttpGet("/game/expose/{gameId}/")]
+        public JsonResult Expose(Guid gameId, int row, int column) {
 
-            var currentPlayer = CurrentGame.GetCurrentPlayer();
-            var selected = CurrentGame.SelectCard(new Position(row, column));
-            var result =  currentPlayer.Expose(selected, CurrentGame);
+            var game = this.GameStore.LoadById(gameId);
+            var currentPlayer = game.GetCurrentPlayer();
+            var selected = game.SelectCard(new Position(row, column));
+            var result =  currentPlayer.Expose(selected, game);
 
 
             return this.Json(selected.Motive);

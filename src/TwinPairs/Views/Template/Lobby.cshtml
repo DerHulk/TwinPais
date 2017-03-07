@@ -6,11 +6,11 @@
     <ul>
         <li *ngFor="let game of Games">
             <div>
-                {{game?.id}}
+                <a routerLink="./game/{{game?.Id}}" >To the Game</a>
                 <button (click)="join(game)">Join</button>
                 Players:
                 <ul>
-                    <li *ngFor="let player of Players">
+                    <li *ngFor="let player of game.Players">
                         <span>{{player}}</span>
                     </li>
                 </ul>

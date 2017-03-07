@@ -1,6 +1,8 @@
-﻿import { Component, Input, trigger, state, style, transition, animate  } from '@angular/core';
+﻿import { Component, Input, trigger, state, style, transition, animate } from '@angular/core';
 import { GameService } from './game.service';
 import { twinPairs } from './entities';
+import { Observable } from 'rxjs/Observable';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     providers: [GameService],
@@ -13,10 +15,10 @@ import { twinPairs } from './entities';
 export class TwinPairComponent {
 
     constructor(private gameService: GameService) {
-        
+
     }
 }
-//test
+
 @Component({
     providers: [GameService],
     selector: 'lobby',
@@ -27,17 +29,23 @@ export class LobbyComponent {
     public Games: twinPairs.Game[];
 
     constructor(private gameService: GameService) {
-        this.gameService.loadGames(x => this.Games = x);
+        this.Games = new Array<twinPairs.Game>();
+        this.gameService
+            .loadGames().subscribe(
+            x => this.Games = x);
     }
 
     public create(): void {
         this.gameService.createGame();
-        this.gameService.loadGames(x => this.Games = x);
+        this.gameService
+            .loadGames().subscribe(
+            x => this.Games = x);
     }
 
     public join(game: twinPairs.Game): void {
         this.gameService.join(game.Id);
-        this.gameService.loadGames(x => this.Games = x);
+        this.gameService.loadGames().subscribe(
+            x => this.Games = x);
     }
 }
 
@@ -60,34 +68,46 @@ export class LobbyComponent {
 })
 export class GameComponent {
 
+    GameId: number;
     Cards: Array<Array<twinPairs.Card>>;
 
-    constructor(private gameService: GameService) {
+    constructor(private route: ActivatedRoute, private gameService: GameService) {
 
-        var loadedCards = gameService.loadCards();
-        var rows = Math.max.apply(Math, loadedCards.map(x => x.Position.Row));
-        var columns = Math.max.apply(Math, loadedCards.map(x => x.Position.Column));
+        route.params.subscribe(params => {
 
-        this.Cards = new Array<Array<twinPairs.Card>>();
+            this.GameId = params["id"];
+            gameService.loadCards(this.GameId).subscribe(x => {
 
-        for (var r = 1; r <= rows; r++) {
-            var rowArray = new Array<twinPairs.Card>();
-            this.Cards.push(rowArray);
+                var rows = Math.max.apply(Math, x.map(r => r.Position.Row));
+                var columns = Math.max.apply(Math, x.map(r => r.Position.Column));
 
-            for (var c = 1; c <= columns; c++) {
-                rowArray.push(this.getCard(loadedCards, r, c));
-            }
-        }
+                x.forEach(x => x.State = "masked");
+
+                this.Cards = new Array<Array<twinPairs.Card>>();
+
+                for (var r = 0; r <= rows; r++) {
+                    var rowArray = new Array<twinPairs.Card>();
+                    this.Cards.push(rowArray);
+
+                    for (var c = 0; c <= columns; c++) {
+                        rowArray.push(this.getCard(x, r, c));
+                    }
+                }
+
+            });
+        });
+
 
     }
 
     public expose(card: twinPairs.Card) {
         card.State = "exposed";
-        var value = this.gameService.expose(card);
-        card.Motiv.Name = value.toString();
+        this.gameService.expose(this.GameId, card).subscribe(x => {
+            card.Motiv.Name = x.Name;
+        });
     }
 
-    public getCard(unsortedCard:Array<twinPairs.Card>, row: number, column: number): twinPairs.Card {
+    public getCard(unsortedCard: Array<twinPairs.Card>, row: number, column: number): twinPairs.Card {
 
         return unsortedCard.find(x => x.Position.Column == column && x.Position.Row == row);
 
