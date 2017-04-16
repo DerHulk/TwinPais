@@ -30,7 +30,7 @@ namespace TwinPairs.Core
             return HashCombiner.CombineHashCodes(this.Id, this.Name);
         }
 
-        public ExposeResult Expose(Card card, Game game)
+        public Motive Expose(MaskedCard card, Game game)
         {
             Contract.Requires(card != null);
             Contract.Requires(game != null);
@@ -38,7 +38,7 @@ namespace TwinPairs.Core
             var history = new History(this, card.Position, DateTime.Now);
             game.AddHistory(history);
 
-            return null;
+            return card.Expose().Motive;
         }
     }
 }

@@ -7,7 +7,7 @@ namespace TwinPairs.Core
 {
     public class GameFactory
     {
-        public Game Create(GameSettings settings)
+        public Game Create(GameSettings settings, Player creator)
         {
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
@@ -37,7 +37,13 @@ namespace TwinPairs.Core
             }
 
             game.Cards = cardSet.OrderBy(x=> x.Position.Row)
-                                .ThenBy(x=> x.Position.Column).ToArray();
+                                .ThenBy(x=> x.Position.Column)
+                                .Select(x=> new MaskedCard(x))
+                                .ToArray();
+
+            game.State = GameStatus.WaitingForPlayers;
+            game.AddPlayer(creator);
+
             return game;
         }
     }

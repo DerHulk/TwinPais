@@ -20,13 +20,14 @@
 
     }
 
+    export class Player {
+      public Name:string;
+    }
+
     export class Game {
         public Id: string;
-        public Player: Array<string>;
+        public Players: Array<string>;
         public State: GameStatus;
-        public get CanJoin() : boolean {
-            return this.State == GameStatus.WaitingForPlayers;
-        }
     }
 
     export class CreateGameCommandModel {
@@ -35,6 +36,12 @@
     }
 
     export class NotOnTurnError extends Error {
+        constructor(m: string) {
+            super(m);
+        }
+    }
+
+    export class AuthentificationError extends Error {
         constructor(m: string) {
             super(m);
         }

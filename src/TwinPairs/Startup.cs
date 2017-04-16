@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Authentication.Cookies;
 using Microsoft.AspNet.Builder;
@@ -32,7 +33,7 @@ namespace TwinPairs
             services.AddIdentity<ApplicationUser, UserRole>().AddDefaultTokenProviders();
             services.AddMvc();
             services.AddSingleton<Microsoft.AspNet.Identity.ILookupNormalizer, Services.LookupNormilizer>();
-            services.AddSingleton<Microsoft.AspNet.Identity.IPasswordHasher<ApplicationUser>, 
+            services.AddSingleton<Microsoft.AspNet.Identity.IPasswordHasher<ApplicationUser>,
                                   Microsoft.AspNet.Identity.PasswordHasher<ApplicationUser>>();
 
             services.AddSingleton<Microsoft.AspNet.Identity.IUserClaimsPrincipalFactory<ApplicationUser>,
@@ -43,7 +44,7 @@ namespace TwinPairs
             services.AddTransient(typeof(Microsoft.AspNet.Identity.UserManager<ApplicationUser>));
             services.AddTransient(typeof(Microsoft.AspNet.Identity.SignInManager<ApplicationUser>));
 
-            services.AddScoped<Microsoft.AspNet.Identity.IUserStore<ApplicationUser>>((x)=> new Services.CustomUserStore<ApplicationUser>());
+            services.AddScoped<Microsoft.AspNet.Identity.IUserStore<ApplicationUser>>((x) => new Services.CustomUserStore<ApplicationUser>());
             services.AddScoped<Microsoft.AspNet.Identity.IRoleStore<UserRole>>((x) => new Services.RoleStore());
 
         }
@@ -62,17 +63,34 @@ namespace TwinPairs
                 AuthenticationScheme = "Cookies",
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true,
-                ExpireTimeSpan = new TimeSpan(1, 0, 0, 0, 0)
+                ExpireTimeSpan = new TimeSpan(1, 0, 0, 0, 0),
+                Events = new CookieAuthenticationEvents()
+                {
+                    OnRedirectToLogin = ctx =>
+                    {
+                        if (ctx.Request.Headers["TwinPairs.Api"] == "V1.0" &&
+                            ctx.Response.StatusCode == (int)HttpStatusCode.OK)
+                        {
+                            ctx.Response.Clear();
+                            ctx.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                        }
+                        else
+                        {
+                            ctx.Response.Redirect(ctx.RedirectUri);
+                        }
+                        return Task.FromResult(0);
+                    }
+                }
             });
             app.UseGoogleAuthentication(x =>
             {
                 x.ClientId = this.Configuration["client_id"];
                 x.ClientSecret = this.Configuration["client_secret"];
+
                 //x.SignInScheme = "Cookies";
                 //x.AuthenticationScheme = "Google";
                 //x.Scope.Add("email");
             });
-
             app.UseMvcWithDefaultRoute();
         }
 

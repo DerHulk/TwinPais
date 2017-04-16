@@ -17,10 +17,12 @@ namespace TwinPairs.Controllers
         [HttpGet]
         public JsonResult Index()
         {
-            return Json(this.GameStore.LoadAllAvailableForPlayer().Select(x => new
-                { Id = x.Id,
-                  Players = x.Players.Select(p => p.Name) }
-                ).ToArray());
+            return Json(this.GameStore.LoadAllAvailableForPlayer(null).Select(x => new
+            {
+                Id = x.Id,
+                State = x.State,
+                Players = x.GetPlayers().Select(p => p.Name)
+            }).ToArray());
         }
 
         [HttpPost]
@@ -34,10 +36,13 @@ namespace TwinPairs.Controllers
             var gameFactory = new GameFactory();
 
             settings.Motives = motiveRepository.LoadAll().Take(model.Cards);
-            var game = gameFactory.Create(settings);
+            var creator = new Player()
+            {
+                Id = Guid.Parse("0f80a756-ba96-4f8a-8333-cbc8f9ef372d"),
+                Name = this.HttpContext.User.Identity.Name
+            };
+            var game = gameFactory.Create(settings, creator);
             game.Id = Guid.NewGuid();
-            game.Players = new Player[] { new Player() { Id = Guid.Parse("0f80a756-ba96-4f8a-8333-cbc8f9ef372d"),
-                                                             Name = this.HttpContext.User.Identity.Name }};
 
             this.GameStore.Add(game);
 
@@ -53,11 +58,8 @@ namespace TwinPairs.Controllers
 
             var selected = this.GameStore.LoadById(guidId);
 
-            if(selected == null)
+            if (selected == null)
                 return new HttpStatusCodeResult((int)System.Net.HttpStatusCode.NotFound);
-
-            if (selected.Players.Count() >= 2 || selected.Players.Any(x=> x.Name == this.HttpContext.User.Identity.Name))
-                return new HttpStatusCodeResult((int)System.Net.HttpStatusCode.NotAcceptable);
 
             var joiningPlayer = new Player()
             {
@@ -65,15 +67,31 @@ namespace TwinPairs.Controllers
                 Name = this.HttpContext.User.Identity.Name
             };
 
-            selected.Players = selected.Players.Union(new Player[] { joiningPlayer });
+            if (!selected.CanJoin(joiningPlayer))
+                return new HttpStatusCodeResult((int)System.Net.HttpStatusCode.NotAcceptable);
 
-            return new HttpStatusCodeResult(200);
+            selected.AddPlayer(joiningPlayer);
+
+            return selected.State == GameStatus.ReadyToStart ? 
+                new HttpStatusCodeResult((int)System.Net.HttpStatusCode.Created) :
+                new HttpStatusCodeResult((int)System.Net.HttpStatusCode.OK);
         }
 
         [HttpPost]
         public JsonResult Start()
         {
             throw new NotImplementedException();
+        }
+
+        [HttpGet]
+        public JsonResult WhoIAm()
+        {
+            var youAre = new Player()
+            {
+                Name = this.HttpContext.User.Identity.Name
+            };
+
+            return Json(youAre);
         }
     }
 }

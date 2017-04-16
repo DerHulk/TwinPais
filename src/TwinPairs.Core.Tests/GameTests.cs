@@ -14,25 +14,25 @@ namespace TwinPairs.Core.Tests
         public GameTests()
         {
             this.Target =  new Game();
-            this.Target.Players = new Player[] {
-                new Player() { Name = "Tom" },
-                new Player() { Name = "Lilu" } };
-
+            this.Target.State = GameStatus.WaitingForPlayers;
+            this.Target.AddPlayer(new Player() { Name = "Tom" });
+            this.Target.AddPlayer(new Player() { Name = "Lilu" });
             this.Target.Cards = new Card[]
             {
                 new Card() { Position = new Position(1,1), Motive = new Motive(1,"cat") },
                 new Card() { Position = new Position(2,1) , Motive = new Motive(1,"dog")  },
                 new Card() { Position = new Position(3,1), Motive = new Motive(1,"dog")  },
                 new Card() { Position = new Position(4,1), Motive = new Motive(1,"cat")  },
-            };
+            }.Select(x=> new MaskedCard(x));
         }
 
         [Fact(DisplayName = "Proof if we get the correct card.")]
         public void SelectCard01()
         {
             //arrange
-            var expected = new Card() { Position = new Position(1, 2) };
-            Target.Cards = Target.Cards.Union( new Card[] { expected });
+            var expected = new MaskedCard( new Card() { Position = new Position(1, 2) });
+            Target.Cards = Target.Cards.Union(new MaskedCard[] { expected });
+
             //act
             var card = Target.SelectCard(new Position(1, 2));
             //assert
@@ -43,7 +43,7 @@ namespace TwinPairs.Core.Tests
         public void GetCurrentPlayer01()
         {
             //arrange
-            var expected = this.Target.Players.First();
+            var expected = this.Target.GetPlayers().First();
 
             //act
             var result = this.Target.GetCurrentPlayer();
@@ -94,6 +94,7 @@ namespace TwinPairs.Core.Tests
         public void GetCurrentPlayer02()
         {
             //arrange
+            this.Target.State = GameStatus.Running;
             var firstPlayer = this.Target.GetCurrentPlayer();
             var card = this.Target.SelectCard(new Position(1, 1));
             firstPlayer.Expose(card, this.Target);

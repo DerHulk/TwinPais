@@ -43,7 +43,7 @@ export class LobbyComponent {
     }
 
     public join(game: twinPairs.Game): void {
-        this.gameService.join(game.Id);
+        this.gameService.join(game);
         this.gameService.loadGames().subscribe(
             x => this.Games = x);
     }
@@ -101,10 +101,11 @@ export class GameComponent {
     }
 
     public expose(card: twinPairs.Card) {
-        card.State = "exposed";
+     
         this.gameService.expose(this.GameId, card).subscribe(x => {
-            card.Motiv.Name = x.Name;
-        });
+            card.Motive.Name = x.Name;
+            card.State = "exposed";
+        }, (error)=> alert(error));
     }
 
     public getCard(unsortedCard: Array<twinPairs.Card>, row: number, column: number): twinPairs.Card {

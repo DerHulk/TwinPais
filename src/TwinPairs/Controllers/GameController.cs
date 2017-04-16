@@ -18,22 +18,28 @@ namespace TwinPairs.Controllers
         public ActionResult Read(Guid gameId)
         {
             var game = this.GameStore.LoadById(gameId);
+
+            if (game.State != GameStatus.ReadyToStart && game.State != GameStatus.Running)
+                return new HttpStatusCodeResult((int)System.Net.HttpStatusCode.PreconditionFailed);
+
             var model = game.Cards.ToArray();
 
             return this.Json(model);
-
         }
 
         [HttpGet("/game/expose/{gameId}/")]
-        public JsonResult Expose(Guid gameId, int row, int column) {
+        public ActionResult Expose(Guid gameId, int row, int column) {
 
             var game = this.GameStore.LoadById(gameId);
             var currentPlayer = game.GetCurrentPlayer();
+
+            if(currentPlayer.Name != this.HttpContext.User.Identity.Name)
+                return new HttpStatusCodeResult((int)System.Net.HttpStatusCode.PreconditionFailed);
+
             var selected = game.SelectCard(new Position(row, column));
-            var result =  currentPlayer.Expose(selected, game);
+            var motiv = currentPlayer.Expose(selected, game);
 
-
-            return this.Json(selected.Motive);
+            return this.Json(motiv);
         }
     }
 }

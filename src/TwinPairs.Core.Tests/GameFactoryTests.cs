@@ -14,11 +14,12 @@ namespace TwinPairs.Core.Tests
         public void Test01()
         {
             //arrange
+            var creator = new Player();
             var factory = new GameFactory();
             var settings = new GameSettings() { Motives = new Motive[] { new Motive(1, "cat") ,
                                                                          new Motive(1, "dog") }};
             //act
-            var result = factory.Create(settings);
+            var result = factory.Create(settings, creator);
 
             //assert
             Assert.True(result.Cards.Count() == 4);

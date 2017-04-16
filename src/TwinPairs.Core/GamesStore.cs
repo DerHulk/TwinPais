@@ -9,7 +9,7 @@ namespace TwinPairs.Core
     public interface IGameStore
     {
         Game LoadById(Guid id);
-        Game[] LoadAllAvailableForPlayer();
+        Game[] LoadAllAvailableForPlayer(Player player);
         void Add(Game game);
     }
 
@@ -22,9 +22,12 @@ namespace TwinPairs.Core
             return Games.SingleOrDefault(g => g.Id == id);
         }
 
-        public Game[] LoadAllAvailableForPlayer()
+        public Game[] LoadAllAvailableForPlayer(Player player)
         {
-            return Games.Where(x => x.Players.Count() <= 2).ToArray();
+            return Games.Where(x => x.State == GameStatus.WaitingForPlayers || 
+                                    ((x.State == GameStatus.Running || 
+                                      x.State == GameStatus.ReadyToStart) && 
+                                      x.GetPlayers().Contains(player))).ToArray();
         }
 
         public void Add(Game game)

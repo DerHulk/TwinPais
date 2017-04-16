@@ -4,16 +4,56 @@ using System.Collections.Generic;
 
 namespace TwinPairs.Core
 {
+    public enum GameStatus
+    {
+        Initalized = 0,
+        WaitingForPlayers = 1,
+        ReadyToStart = 2,
+        Running = 4,
+        Finished = 8,
+    }
+
     public class Game
     {
         private int MaxExposedCards = 2;
         private readonly List<History> History = new List<Core.History>();
 
         public Guid Id { get; set; }
-        public virtual IEnumerable<Card> Cards { get; set; }
-        public virtual IEnumerable<Player> Players { get; set; }
+        public GameStatus State { get; internal set; }
+        public virtual IEnumerable<MaskedCard> Cards { get; set; }
+        private Dictionary<Player, List<Card>> PlayerList { get; set; } = new Dictionary<Player, List<Card>>();
 
-        public Card SelectCard(Position position)
+        public void Initalize(Card[] cards)
+        {
+
+        }
+
+        public bool CanJoin(Player player)
+        {
+            return (this.State == GameStatus.WaitingForPlayers ||
+                    this.State == GameStatus.ReadyToStart) && 
+                   !this.PlayerList.Keys.Any(x => x.Name == player.Name) &&
+                    this.PlayerList.Keys.Count < 2;
+        }
+
+        public void AddPlayer(Player player)
+        {
+            if (player == null)
+                throw new ArgumentNullException(nameof(player));
+
+            if (this.State != GameStatus.WaitingForPlayers && this.State != GameStatus.ReadyToStart)
+                throw new InvalidOperationException();
+
+            if (this.PlayerList.Keys.Contains(player))
+                return;
+
+            this.PlayerList.Add(player, new List<Card>());
+
+            if (this.PlayerList.Count > 1)
+                this.State = GameStatus.ReadyToStart;
+        }
+
+        public MaskedCard SelectCard(Position position)
         {
             return this.Cards.SingleOrDefault(x => x.Position.Column == position.Column && 
                                                    x.Position.Row == position.Row);
@@ -21,7 +61,27 @@ namespace TwinPairs.Core
 
         public void AddHistory(History history)
         {
+            if (history == null)
+                throw new ArgumentNullException(nameof(history));
+
+            if (this.State == GameStatus.ReadyToStart && !this.History.Any())
+                this.State = GameStatus.Running;
+
+            if (this.State != GameStatus.Running)
+                throw new NotSupportedException();
+
             History.Add(history);
+
+            var lastHistory = this.GetLastHistory();
+            if (!this.IsExposeMissing(lastHistory))
+            {
+                var cards = this.GetCards(lastHistory);
+
+                if (this.IsPair(cards))
+                {
+                    this.PlayerList[history.Player].AddRange(cards);
+                }
+            }
         }
 
         public History[] GetLastHistory()
@@ -42,7 +102,7 @@ namespace TwinPairs.Core
         {
             var cards = from h in history
                         join c in this.Cards on h.Exposed equals c.Position
-                        select c;
+                        select c.Expose();
 
             return cards.ToArray();
         }
@@ -60,16 +120,20 @@ namespace TwinPairs.Core
                    relevant.All(x => x.Motive == cards.FirstOrDefault().Motive);
         }
 
+        public Player[] GetPlayers()
+        {
+            return this.PlayerList.Keys.ToArray();
+        }
+
         public Player GetCurrentPlayer()
         {
             if (!this.History.Any())
-                return this.Players.FirstOrDefault();
+                return this.PlayerList.Keys.FirstOrDefault();
 
             var lastHistory = this.GetLastHistory();
-            var exposeIsMissing = (lastHistory.Count() % this.MaxExposedCards != 0);
             var lastPlayer = lastHistory.First().Player;
 
-            if (exposeIsMissing)
+            if (this.IsExposeMissing(lastHistory))
                 return lastPlayer;
 
             var cards = this.GetCards(lastHistory);
@@ -80,16 +144,21 @@ namespace TwinPairs.Core
             return this.GetNextPlayer(lastPlayer);
         }
 
+        private bool IsExposeMissing(History[] lastHistory)
+        {
+            return (lastHistory.Count() % this.MaxExposedCards != 0);
+        }
+
         private Player GetNextPlayer(Player currentPlayer)
         {
-            var playerList = this.Players.ToList();
+            var playerList = this.PlayerList.Keys.ToList();
             var index = playerList.IndexOf(currentPlayer);
 
             if (index == -1)
                 throw new InvalidOperationException("Playerlist is corrupt");
 
-            if (index + 1 >= this.Players.Count())
-                return this.Players.First();
+            if (index + 1 >= playerList.Count())
+                return playerList.First();
             else
                 return playerList[index + 1];
         }

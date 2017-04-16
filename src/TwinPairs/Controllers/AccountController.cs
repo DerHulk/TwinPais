@@ -7,6 +7,7 @@ using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Identity;
 using TwinPairs.ViewModels;
 using System.Security.Claims;
+using TwinPairs.Extensions;
 
 namespace TwinPairs.Controllers
 {
@@ -80,7 +81,21 @@ namespace TwinPairs.Controllers
             //add cookie
             await HttpContext.Authentication.SignInAsync("Cookies", info.ExternalPrincipal);
 
-            // Sign in the user with this external login provider if the user already has a login.
+            //we need a full redirect because of ValidateAntiForgeryToken
+            //http://stackoverflow.com/questions/14970102/anti-forgery-token-is-meant-for-user-but-the-current-user-is-username
+            return RedirectToAction(nameof(GetExternalLoginConfirmation));
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl = null)
+        {
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+            {
+                return RedirectToAction(nameof(Login));
+            }
+
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
             if (result.Succeeded)
             {
@@ -104,7 +119,7 @@ namespace TwinPairs.Controllers
         //
         // POST: /Account/ExternalLoginConfirmation
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl = null)
         {

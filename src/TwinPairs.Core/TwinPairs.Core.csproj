@@ -53,6 +53,7 @@
     <Compile Include="Lobby.cs" />
     <Compile Include="MotiveRepository.cs" />
     <Compile Include="Player.cs" />
+    <Compile Include="PlayerStore.cs" />
     <Compile Include="Position.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Motive.cs" />
