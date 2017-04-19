@@ -1,24 +1,2 @@
 
-
-<div>
-    <h1>Lobby</h1>
-   
-
-    <button (click)="create()">Create new Game</button>
-    <ul>
-        <li *ngFor="let game of Games">
-            <div>
-                <a routerLink="./game/{{game?.Id}}" >To the Game</a>
-                <button  *ngIf="canJoin(game)" (click)="join(game)">Join</button>
-                Players:
-                <ul>
-                    <li *ngFor="let player of game.Players">
-                        <span>{{player}}</span>
-                    </li>
-                </ul>
-            </div>
-        </li>
-    </ul>
-</div>
-
- <router-outlet></router-outlet>
+<router-outlet></router-outlet>

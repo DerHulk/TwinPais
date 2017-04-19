@@ -1,0 +1,48 @@
+
+.exposed-card {
+    background: red;
+}
+
+.card-container { 
+  width: 50px;
+  height: 50px;
+  position: relative;
+  perspective: 800px;
+}
+
+.card {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  transform-style: preserve-3d;
+  transition: transform 1s;
+  background: blue;
+}
+
+.card figure {
+  margin: 0;
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+
+.card .front {
+  background: red;
+}
+
+.card .back {
+  background: blue;
+  transform: rotateY( 180deg );
+}
+
+.board ul{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.board li {
+    display: inline-block;
+}

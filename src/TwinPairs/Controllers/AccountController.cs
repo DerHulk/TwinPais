@@ -8,6 +8,7 @@ using Microsoft.AspNet.Identity;
 using TwinPairs.ViewModels;
 using System.Security.Claims;
 using TwinPairs.Extensions;
+using TwinPairs.Core;
 
 namespace TwinPairs.Controllers
 {
@@ -15,6 +16,7 @@ namespace TwinPairs.Controllers
     public class AccountController : Controller
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private IPlayerStore PlayerStore { get; } = new PlayerStore();
 
         public AccountController(
             SignInManager<ApplicationUser> signInManager)
@@ -95,8 +97,8 @@ namespace TwinPairs.Controllers
             {
                 return RedirectToAction(nameof(Login));
             }
-
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+            
             if (result.Succeeded)
             {
                 return RedirectToLocal(returnUrl);
@@ -131,8 +133,10 @@ namespace TwinPairs.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+
+                var ignore = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 //lets add him to database
+                this.PlayerStore.CreatePlayer(this.User);
             }
 
             ViewData["ReturnUrl"] = returnUrl;

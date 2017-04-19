@@ -13,11 +13,13 @@ namespace TwinPairs.Controllers
     public class LobbyController : Controller
     {
         private IGameStore GameStore { get; } = new GamesStore(); //hack
+        private IPlayerStore PlayerStore { get; } = new PlayerStore(); //hack
 
         [HttpGet]
         public JsonResult Index()
         {
-            return Json(this.GameStore.LoadAllAvailableForPlayer(null).Select(x => new
+            var player = this.PlayerStore.GetPlayer(this.User);
+            return Json(this.GameStore.LoadAllAvailableForPlayer(player).Select(x => new
             {
                 Id = x.Id,
                 State = x.State,
@@ -36,11 +38,7 @@ namespace TwinPairs.Controllers
             var gameFactory = new GameFactory();
 
             settings.Motives = motiveRepository.LoadAll().Take(model.Cards);
-            var creator = new Player()
-            {
-                Id = Guid.Parse("0f80a756-ba96-4f8a-8333-cbc8f9ef372d"),
-                Name = this.HttpContext.User.Identity.Name
-            };
+            var creator = this.PlayerStore.GetPlayer(this.User);
             var game = gameFactory.Create(settings, creator);
             game.Id = Guid.NewGuid();
 
@@ -57,15 +55,10 @@ namespace TwinPairs.Controllers
                 return new HttpStatusCodeResult((int)System.Net.HttpStatusCode.NotFound);
 
             var selected = this.GameStore.LoadById(guidId);
+            var joiningPlayer = this.PlayerStore.GetPlayer(this.User);
 
             if (selected == null)
                 return new HttpStatusCodeResult((int)System.Net.HttpStatusCode.NotFound);
-
-            var joiningPlayer = new Player()
-            {
-                Id = Guid.NewGuid(),
-                Name = this.HttpContext.User.Identity.Name
-            };
 
             if (!selected.CanJoin(joiningPlayer))
                 return new HttpStatusCodeResult((int)System.Net.HttpStatusCode.NotAcceptable);
@@ -86,10 +79,7 @@ namespace TwinPairs.Controllers
         [HttpGet]
         public JsonResult WhoIAm()
         {
-            var youAre = new Player()
-            {
-                Name = this.HttpContext.User.Identity.Name
-            };
+            var youAre = this.PlayerStore.GetPlayer(this.User);
 
             return Json(youAre);
         }

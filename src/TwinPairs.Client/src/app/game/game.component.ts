@@ -5,17 +5,29 @@ import { Observable } from 'rxjs/Observable';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-game',
-  templateUrl: './game.component.html',
-  styleUrls: ['./game.component.css']
-})
-export class GameComponent  {
+    selector: 'app-game',
+    templateUrl: './game.component.html',
+    styleUrls: ['./game.component.css'],
+    animations: [
+        trigger('cardState', [
+            state('masked', style({
 
-  GameId: number;
+            })),
+            state('exposed', style({
+                transform: 'rotateY(180deg)',
+            })),
+            transition('masked => exposed', animate('100ms ease-in')),
+            transition('exposed => masked', animate('100ms ease-out'))
+        ])
+    ]
+})
+export class GameComponent {
+
+    GameId: number;
     Cards: Array<Array<twinPairs.Card>>;
 
     constructor(private route: ActivatedRoute, private gameService: GameService) {
-      
+
         route.params.subscribe(params => {
 
             this.GameId = params["id"];
@@ -24,7 +36,10 @@ export class GameComponent  {
                 var rows = Math.max.apply(Math, x.map(r => r.Position.Row));
                 var columns = Math.max.apply(Math, x.map(r => r.Position.Column));
 
-                x.forEach(x => x.State = "masked");
+                x.forEach(x => {
+                    x.State = "masked";
+                    x.Motive = new twinPairs.CardMotiv();
+                });
 
                 this.Cards = new Array<Array<twinPairs.Card>>();
 
@@ -44,11 +59,11 @@ export class GameComponent  {
     }
 
     public expose(card: twinPairs.Card) {
-     
+
         this.gameService.expose(this.GameId, card).subscribe(x => {
             card.Motive.Name = x.Name;
             card.State = "exposed";
-        }, (error)=> alert(error));
+        }, (error) => alert(error));
     }
 
     public getCard(unsortedCard: Array<twinPairs.Card>, row: number, column: number): twinPairs.Card {
@@ -56,6 +71,6 @@ export class GameComponent  {
         return unsortedCard.find(x => x.Position.Column == column && x.Position.Row == row);
 
     }
-  
+
 
 }

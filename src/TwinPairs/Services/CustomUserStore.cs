@@ -4,12 +4,15 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
+using TwinPairs.Core;
 using TwinPairs.ViewModels;
 
 namespace TwinPairs.Services
 {
     public class CustomUserStore<T> : IUserStore<T>, Microsoft.AspNet.Identity.IUserLoginStore<T> where T : ApplicationUser
     {
+        private PlayerStore PlayerStore { get; } = new PlayerStore();
+
         public Task AddLoginAsync(T user, UserLoginInfo login, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();

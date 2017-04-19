@@ -87,7 +87,7 @@ namespace TwinPairs.Core
         public History[] GetLastHistory()
         {
             var result = new List<History>();
-            var stack = new Stack<History>(this.History.OrderByDescending(x => x.Date));
+            var stack = new Stack<History>(this.History.OrderBy(x => x.Date));
             var lastPlayer = stack.Peek().Player;
 
             while (stack.Count > 0 && stack.Peek()?.Player == lastPlayer)
