@@ -139,8 +139,7 @@ namespace TwinPairs.Controllers
                 this.PlayerStore.CreatePlayer(this.User);
             }
 
-            ViewData["ReturnUrl"] = returnUrl;
-            return View(model);
+            return Redirect("http://localhost:4200");
         }
 
         #region Helpers

@@ -9,29 +9,29 @@ namespace TwinPairs.Core
 {
     public class PlayerStore : IPlayerStore
     {
-        private static readonly Dictionary<string, Player> Store = new Dictionary<string, Player>();
+        private SimplePersistence Persitence { get; } = new SimplePersistence(); 
 
         public void CreatePlayer(ClaimsPrincipal identity)
         {
-            var player = new Player() { Id = Guid.NewGuid(), Name = identity.Identity.Name };
             var id = this.GetId(identity);
-
-            Store.Add(id, player);
+            var player = new Player() { Id = id, Name = identity.Identity.Name,  };
+            
+            Persitence.Save(player, x=> x.Id == id);
         }
 
         public Player GetPlayer(string provider, string providerKey)
         {
-            throw new NotImplementedException();
+            var players = this.Persitence.Read<Player>();
+            return players?.SingleOrDefault(x => x.Id == providerKey);
         }
 
         public Player GetPlayer(ClaimsPrincipal identity)
         {
             var id = this.GetId(identity);
+            var players = this.Persitence.Read<Player>();
 
-            if (!Store.ContainsKey(id))
-                return null;
+            return players?.SingleOrDefault(x => x.Id == id);
 
-            return Store[id];
         }
 
         private string GetId(ClaimsPrincipal identity)

@@ -22,6 +22,7 @@ namespace TwinPairs.Core
     public class MaskedCard
     {
         private Card Card { get; }
+
         public Position Position {
             get {
                 return this.Card.Position;

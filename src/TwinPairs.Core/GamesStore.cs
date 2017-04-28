@@ -10,29 +10,41 @@ namespace TwinPairs.Core
     {
         Game LoadById(Guid id);
         Game[] LoadAllAvailableForPlayer(Player player);
-        void Add(Game game);
+        void Save(Game selected);
     }
 
-    public class GamesStore : IGameStore
+    public class GamesStore : IGameStore  
     {
-        private static List<Game> Games { get; } = new List<Game>();
+        private SimplePersistence Persistence { get; } = new SimplePersistence();
 
         public Game LoadById(Guid id)
         {
-            return Games.SingleOrDefault(g => g.Id == id);
+            var games = this.ReadAll();
+
+            return games?.SingleOrDefault(x => x.Id == id);
         }
 
         public Game[] LoadAllAvailableForPlayer(Player player)
         {
-            return Games.Where(x => x.State == GameStatus.WaitingForPlayers || 
+            var games = this.ReadAll();
+
+            if (games == null)
+                return new Game[] { };
+
+            return games?.Where(x => x.State == GameStatus.WaitingForPlayers || 
                                     ((x.State == GameStatus.Running || 
                                       x.State == GameStatus.ReadyToStart) && 
                                       x.GetPlayers().Contains(player))).ToArray();
         }
 
-        public void Add(Game game)
+        private Game[] ReadAll()
         {
-            Games.Add(game);
+            return Persistence.Read<GameState>()?.Select(x => Game.LoadFrom(x)).ToArray();
+        }
+
+        public void Save(Game game)
+        {
+            Persistence.Save(game.GetState(), x=> x.Id == game.Id);
         }
     }
 }

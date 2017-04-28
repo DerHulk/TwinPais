@@ -23,9 +23,27 @@ namespace TwinPairs.Core
         public virtual IEnumerable<MaskedCard> Cards { get; set; }
         private Dictionary<Player, List<Card>> PlayerList { get; set; } = new Dictionary<Player, List<Card>>();
 
-        public void Initalize(Card[] cards)
+        public static Game LoadFrom(GameState state)
         {
+            var game = new Game();
 
+            game.Id = state.Id;
+            game.State = state.Status;
+            game.Cards = state.Cards.Select(x=> new MaskedCard(x)).ToArray();
+
+            foreach (var player in state.Players)
+            {
+                game.PlayerList.Add(player, new List<Card>());
+            }
+
+            game.History.Clear();
+           
+            foreach (var item in state.History)
+            {
+                game.AddHistory(item);
+            }
+
+            return game;
         }
 
         public bool CanJoin(Player player)
@@ -90,7 +108,7 @@ namespace TwinPairs.Core
             var stack = new Stack<History>(this.History.OrderBy(x => x.Date));
             var lastPlayer = stack.Peek().Player;
 
-            while (stack.Count > 0 && stack.Peek()?.Player == lastPlayer)
+            while (stack.Count > 0 && stack.Peek()?.Player.Id == lastPlayer.Id)
             {
                 result.Add(stack.Pop());
             }
@@ -100,7 +118,7 @@ namespace TwinPairs.Core
 
         public Card[] GetCards(History[] history)
         {
-            var cards = from h in history
+            var cards = from h in history.OrderBy(x=> x.Date)
                         join c in this.Cards on h.Exposed equals c.Position
                         select c.Expose();
 
@@ -112,12 +130,13 @@ namespace TwinPairs.Core
             var expectedPairs = (float)cards.Count() / this.MaxExposedCards;
             var toSkip = (int)(Math.Ceiling(expectedPairs -1) * this.MaxExposedCards);
             var relevant = cards.Skip(toSkip).Distinct();
+            var currentMotiv = relevant.FirstOrDefault()?.Motive;
 
             if (!relevant.Any())
                 return false;
 
             return relevant.Count() == this.MaxExposedCards && 
-                   relevant.All(x => x.Motive == cards.FirstOrDefault().Motive);
+                   relevant.All(x => object.Equals(x.Motive, currentMotiv));
         }
 
         public Player[] GetPlayers()
@@ -144,6 +163,17 @@ namespace TwinPairs.Core
             return this.GetNextPlayer(lastPlayer);
         }
 
+        public GameState GetState() {
+            return new GameState()
+            {
+                Id = this.Id,
+                Cards = this.Cards.Select(x=> x.Expose()).ToArray(),
+                Players = this.PlayerList.Keys.ToArray(),
+                History = this.History.ToArray(),
+                Status = this.State,
+            };
+        }
+
         private bool IsExposeMissing(History[] lastHistory)
         {
             return (lastHistory.Count() % this.MaxExposedCards != 0);
@@ -163,5 +193,14 @@ namespace TwinPairs.Core
                 return playerList[index + 1];
         }
 
+    }
+
+    public class GameState
+    {
+        public Guid Id { get; set; }
+        public Card[] Cards { get; set; }
+        public Player[] Players { get; set; }
+        public History[] History { get; set; }
+        public GameStatus Status { get; set; }
     }
 }

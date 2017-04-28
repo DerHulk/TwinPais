@@ -49,6 +49,6 @@ export class LobbyComponent {
     if (error.status == 0)
       alert('Backend Server not availabe');
     else if (error.status == 403)
-      alert('Not Authorized');
+      window.location.href = 'http://localhost:58386/account/login';
   }
 }

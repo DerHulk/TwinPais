@@ -11,13 +11,16 @@ import { ActivatedRoute } from '@angular/router';
     animations: [
         trigger('cardState', [
             state('masked', style({
-
             })),
             state('exposed', style({
                 transform: 'rotateY(180deg)',
             })),
+            state('paired', style({
+                transform: 'rotateY(90deg)',
+            })),
             transition('masked => exposed', animate('100ms ease-in')),
-            transition('exposed => masked', animate('100ms ease-out'))
+            transition('exposed => masked', animate('100ms ease-out')),
+            transition('* => paired', animate('100ms ease-out')),
         ])
     ]
 })
@@ -25,6 +28,8 @@ export class GameComponent {
 
     GameId: number;
     Cards: Array<Array<twinPairs.Card>>;
+    Pairs: number = 0;
+    LastCard: twinPairs.Card;
 
     constructor(private route: ActivatedRoute, private gameService: GameService) {
 
@@ -55,15 +60,42 @@ export class GameComponent {
             });
         });
 
-
     }
 
     public expose(card: twinPairs.Card) {
 
+
+        if (card.State != "masked")
+            return;
+
         this.gameService.expose(this.GameId, card).subscribe(x => {
+
             card.Motive.Name = x.Name;
             card.State = "exposed";
-        }, (error) => alert(error));
+
+            if (this.LastCard != null && this.LastCard != card && this.LastCard.Motive.Name == card.Motive.Name) {
+                this.Pairs++;
+                this.LastCard.State = "paired";
+                card.State = "paired";
+            }
+
+            this.LastCard = card;
+
+        }, (error) => {
+
+            this.LastCard = null;
+            if (error.status == 412) {
+                this.Cards.forEach(r => {
+                    r.forEach(c => {
+                        if (c.State == "exposed")
+                            c.State = "masked"
+                    }
+                    );
+                });
+            }
+            else
+                alert(error)
+        });
     }
 
     public getCard(unsortedCard: Array<twinPairs.Card>, row: number, column: number): twinPairs.Card {

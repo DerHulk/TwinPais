@@ -16,9 +16,5 @@ namespace TwinPairs.Controllers
         {
             return View();
         }
-
-
-
-
     }
 }

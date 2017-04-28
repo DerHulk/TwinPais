@@ -39,6 +39,8 @@ namespace TwinPairs.Controllers
             var selected = game.SelectCard(new Position(row, column));
             var motiv = currentPlayer.Expose(selected, game);
 
+            this.GameStore.Save(game);
+
             return this.Json(motiv);
         }
     }

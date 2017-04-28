@@ -17,5 +17,23 @@ namespace TwinPairs.Core
             this.Row = row;
             this.Column = column;
         }
+
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as Position);
+        }
+
+        public bool Equals(Position obj)
+        {
+            if (obj == null)
+                return false;
+
+            return int.Equals(obj.Row, this.Row) && int.Equals(obj.Column, this.Column);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCombiner.CombineHashCodes(this.Row, this.Column);
+        }
     }
 }

@@ -42,7 +42,7 @@ namespace TwinPairs.Controllers
             var game = gameFactory.Create(settings, creator);
             game.Id = Guid.NewGuid();
 
-            this.GameStore.Add(game);
+            this.GameStore.Save(game);
 
             return new HttpStatusCodeResult(200);
         }
@@ -64,6 +64,7 @@ namespace TwinPairs.Controllers
                 return new HttpStatusCodeResult((int)System.Net.HttpStatusCode.NotAcceptable);
 
             selected.AddPlayer(joiningPlayer);
+            GameStore.Save(selected);
 
             return selected.State == GameStatus.ReadyToStart ? 
                 new HttpStatusCodeResult((int)System.Net.HttpStatusCode.Created) :

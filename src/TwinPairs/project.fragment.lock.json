@@ -8,6 +8,8 @@
         "bin/Debug/TwinPairs.Core.dll": {}
       },
       "runtime": {
+        "../../packages/NetJSON.1.2.1.9/lib/net40/NetJSON.dll": {},
+        "../../packages/Newtonsoft.Json.10.0.2/lib/net45/Newtonsoft.Json.dll": {},
         "bin/Debug/TwinPairs.Core.dll": {}
       },
       "contentFiles": {

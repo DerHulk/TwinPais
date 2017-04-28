@@ -6,6 +6,11 @@
       "bin": {
         "assembly": "../../src/TwinPairs.Core/obj/{configuration}/TwinPairs.Core.dll",
         "pdb": "../../src/TwinPairs.Core/obj/{configuration}/TwinPairs.Core.pdb"
+      },
+      "dependencies": {
+        "DBreeze": "1.84.0",
+        "NetJSON": "1.2.1.9",
+        "Newtonsoft.Json": "10.0.2"
       }
     }
   }
