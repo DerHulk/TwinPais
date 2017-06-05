@@ -13,7 +13,7 @@ namespace TwinPairs.Core
         public SimplePersistence()
         {
             
-            Path = System.AppContext.BaseDirectory  + "\\..\\App_Data\\";
+            Path = System.AppContext.BaseDirectory  + "\\App_Data\\";
         }
 
         public void Save<T>(T toSave, Func<T,bool> identifiyer)
