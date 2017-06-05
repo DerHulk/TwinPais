@@ -1,0 +1,13 @@
+﻿<div *ngFor="let r of Cards" class="board">
+    <ul>
+        <li *ngFor="let c of r" (click)="expose(c)"  >
+            <div class="card-container">
+                <div class="card" [@cardState]="c.State">
+                    <figure class="front">{{c.Position.Row}}</figure>
+                    <figure class="back">{{c.Motive.Name}}</figure>
+                </div>
+            </div>
+
+        </li>
+    </ul>
+</div>

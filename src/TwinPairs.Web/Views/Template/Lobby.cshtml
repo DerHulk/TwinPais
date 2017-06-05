@@ -1,0 +1,20 @@
+﻿<div>
+    <h1>Lobby</h1>
+    <a href="/game/1">Game</a>
+    <a routerLink="/games" routerLinkActive="active">Crisis Center</a>
+    <button (click)="create()">Create new Game</button>
+    <ul>
+        <li *ngFor="let game of Games">
+            <div>
+                <a routerLink="./game/{{game?.Id}}" >To the Game</a>
+                <button *ngIf="game.CanJoin" (click)="join(game)">Join</button>
+                Players:
+                <ul>
+                    <li *ngFor="let player of game.Players">
+                        <span>{{player}}</span>
+                    </li>
+                </ul>
+            </div>
+        </li>
+    </ul>
+</div>

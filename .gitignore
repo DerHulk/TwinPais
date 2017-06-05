@@ -229,3 +229,8 @@ ModelManifest.xml
 /src/TwinPairs/App/*.map
 /src/TwinPairs/App_Data/GameState
 /src/TwinPairs/App_Data/Player
+/src/TwinPairs.Web/App_Data
+/src/TwinPairs.Web/App_Data/Todo.txt
+/src/TwinPairs.Web/App_Data/Player
+/src/TwinPairs.Web/App_Data/GameState
+/src/TwinPairs.Web/App_Data/config.json
